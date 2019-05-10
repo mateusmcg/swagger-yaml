@@ -1,0 +1,133 @@
+swagger: '2.0'
+info:
+  description: This is a simple API
+  version: "3.0.1"
+  title: Simple Inventory API
+  # put the contact info for your development or API team
+  contact:
+    email: you@your-company.com
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: products
+  description: Tudo relacionado a produtos
+
+paths:
+  /products:
+    post:
+      tags:
+      - products
+      summary: adds a product
+      operationId: addProduct
+      description: Adds a product to the system
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: productItem
+        description: Product item to add
+        schema:
+          $ref: '#/definitions/ProductItem'
+      responses:
+        201:
+          description: item created
+        400:
+          description: invalid input, object invalid
+        409:
+          description: this products already exists
+  /products/{id}:
+    get:
+      tags:
+      - products
+      summary: searches product
+      operationId: searchProduct
+      description: |
+        By passing in the appropriate options, you can search for
+        available product in the system
+      produces:
+      - application/json
+      parameters: 
+      - name: id
+        in: path
+        description: ID of the product to look for
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: search results matching criteria
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/ProductItem'
+        404:
+          description: not found
+    patch:
+      tags:
+      - products
+      summary: updates parts of the product
+      description: updates parts of the product
+      parameters: 
+      - name: id
+        in: path
+        description: ID of the product to update
+        required: true
+        type: integer
+        format: int64
+      responses:
+        204:
+          description: no content
+  /products/{id}/prices:
+    post:
+      tags: 
+      - products
+      summary: adds a new price to the product
+      description: adds a new price to the product
+      parameters: 
+      - name: id
+        in: path
+        description: ID of product to add the price
+        required: true
+        type: integer
+        format: int64
+      responses:
+        201:
+          description: price created
+    
+definitions:
+  ProductItem:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 175
+      name:
+        type: string
+        example: Widget Adapter
+      description:
+        type: string
+      price:
+        $ref: '#/definitions/Price'
+      validThrough:
+        type: string
+        format: date-time
+  Price:
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 15
+      value:
+        type: number
+        format: money
+        example: 5.36
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /mateusmcg/pucFood/1.0.0
+schemes:
+ - https
